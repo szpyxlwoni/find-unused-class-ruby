@@ -4,30 +4,34 @@ require 'nokogiri'
 require 'json'
 include CssParser
 
-@css_file = 'testfile.css'
-@template_file = "testfile.html"
-
 def load_css_file css_file
 	parser = CssParser::Parser.new
 	parser.load_file!(css_file, '.', :print)
 	parser
 end
 
-def is_css_in_file selector, template_file
-	page = Nokogiri::HTML(open(@template_file))
+def css_in_template_file? selector, template_file
+	page = Nokogiri::HTML(open(template_file))
 	(page.css selector).empty?
 end
 
+def css_in_all_template_file? selector
+	JSON.parse(@config_json)['template'].each do |template_file|
+		return true if css_in_template_file? selector, template_file
+	end
+	false
+end
+
+def iterator_each_class css_file
+	(load_css_file css_file).each_selector(:print) do |selector, declarations, specificity|
+		next unless selector.start_with? '.'
+		puts css_file + ":" + selector if css_in_all_template_file? selector
+	end
+end
+
 def find_unused_css_style config_json
-	JSON.parse(File.open(config_json).read)['css'].each do |css_file|
-		css_file_parser = load_css_file css_file
-		flag = false
-		css_file_parser.each_selector(:print) do |selector, declarations, specificity|
-			next unless selector.start_with? '.'
-			JSON.parse(File.open(config_json).read)['template'].each do |template_file|
-				flag = true if is_css_in_file selector, template_file
-			end
-			puts css_file + ":" + selector if flag
-		end
+	@config_json = File.open(config_json).read
+	JSON.parse(@config_json)['css'].each do |css_file|
+		iterator_each_class css_file
 	end
 end

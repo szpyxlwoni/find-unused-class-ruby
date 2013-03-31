@@ -1,4 +1,4 @@
 {
-	"css": ["testfile.css", "testfile1.css"],
-	"template": ["testfile.html", "testfile1.html"]
+	"css": ["test/testfile.css", "test/testfile1.css"],
+	"template": ["test/testfile.html", "test/testfile1.html"]
 }
