@@ -1,0 +1,4 @@
+{
+	"css": ["testfile.css", "testfile1.css"],
+	"template": ["testfile.html", "testfile1.html"]
+}
