@@ -31,5 +31,3 @@ def find_unused_css_style config_json
 		end
 	end
 end
-
-find_unused_css_style "config.json"
